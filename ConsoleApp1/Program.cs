@@ -16,6 +16,8 @@ namespace MyApp
             string baseUrl = "https://api.thenewsapi.com/v1/news/top";
             string endpoint = "";
 
+            List<string> linhas = new();
+
             RestResponse response = RequestService.RequestAsync(baseUrl, endpoint);
 
             if (response.IsSuccessStatusCode)
@@ -33,6 +35,33 @@ namespace MyApp
                     News new1 = result.ToObject<News>();
                     news.Add(new1);
                 }
+
+                string linha = new();
+
+                foreach (News noticia in news){
+                    linha = $"{noticia.title};{noticia.description};{noticia.url};{noticia.image_url};{noticia.source}";
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Writeline(linha);
+                    linhas.add(linha);
+                }
+
+                byte[] bytesArquivo = null;
+
+                using (MemoryStream arquivo = new MemoryStream())
+                {
+                    using (StreamWriter sw = new StreamWriter(arquivo))
+                    {
+                        sw.WriteLine("Título;Descrição;Link(URL);Imagem;Portal");
+                        foreach (string linha in linhas)
+                            sw.WriteLine(linha);
+                    }
+                    bytesArquivo = arquivo.ToArray();
+                }
+
+                string hoje = DateTime.UtcNow.ToString("-dd-MM-yyyy");
+
+                string diretorio = $@"C:\NoticiasTOP3{hoje}.csv";
+                File.WriteAllBytes(diretorio, bytesArquivo);
 
             }
             else
