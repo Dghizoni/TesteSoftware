@@ -8,23 +8,23 @@ namespace UBEC.GenneraReports.Services
 {
     public class RequestService
     {
-       
 
         public static RestResponse RequestAsync(
-            string url,
-            string locale = "us",
-            string limit = "3",
-            string apiToken = "rcFgbY64i2j6EIrvei2wYoQbVQIzcWmEGJkH2mo6",
-            string endpoint = "/",
-            Dictionary<string, string> urlSegments = null,
-            Method method = Method.Get,
-            string body = null
+          string url,
+          string locale,
+          string limit,
+          string apiToken,
+          string endpoint = "/",
+          Dictionary<string, string>? urlSegments = null,
+          Method method = Method.Get,
+          string body = null
         )
-        {          
+        {
             Uri baseUrl = new Uri(url);
             RestClient client = new RestClient(baseUrl);
 
             RestRequest request = new RestRequest(endpoint, method);
+
             request.AddQueryParameter("api_token", apiToken);
             request.AddQueryParameter("locale", locale);
             request.AddQueryParameter("limit", limit);
