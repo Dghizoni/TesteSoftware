@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1.Models
 {
-
     public class News
     {
         public string title { get; set; }
@@ -15,5 +14,13 @@ namespace ConsoleApp1.Models
         public string image_url { get; set; }
         public string source { get; set; }
 
+        public News(string title, string description, string url, string image_url, string source)
+        {
+            this.title = title;
+            this.description = description;
+            this.url = url;
+            this.image_url = image_url;
+            this.source = source;
+        }
     }
 }

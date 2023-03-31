@@ -1,0 +1,72 @@
+using ConsoleApp1.Models;
+using Newtonsoft.Json.Linq;
+using RestSharp;
+
+namespace MyApp
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            string baseUrl = "https://api.thenewsapi.com/v1/news/top";
+            string locale = "us";
+            string limit = "3";
+            string apiToken = "rcFgbY64i2j6EIrvei2wYoQbVQIzcWmEGJkH2mo6";
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Fazendo Requisição");
+
+            RestRequest request = new RestRequest(Method.GET);
+            request.AddParameter("api_token", apiToken);
+            request.AddParameter("locale", locale);
+            request.AddParameter("limit", limit);
+
+            RestClient client = new RestClient(baseUrl);
+            IRestResponse response = await client.ExecuteAsync(request);
+
+            if (response.IsSuccessful)
+            {
+                Console.WriteLine($"Requisição Status: {response.StatusCode}");
+
+                JObject json = JObject.Parse(response.Content);
+                IList<JToken> results = json["data"].Children().ToList();
+
+                IList<News> news = new List<News>();
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Iniciando Transformação Json no Objeto News");
+
+                foreach (JToken result in results)
+                {
+                    News new1 = result.ToObject<News>();
+                    news.Add(new1);
+                }
+
+                Console.WriteLine("Finalizado Transformação Json no Objeto News");
+
+                string linha = "";
+                List<string> linhas = new();
+
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine("Criando Arquivo .CSV");
+
+                foreach (News noticia in news)
+                {
+                    linha = $"{noticia.title};{noticia.description};{noticia.url};{noticia.image_url};{noticia.source}";
+                    linhas.Add(linha);
+                }
+
+                string filePath = $"NoticiasTOP3-{DateTime.UtcNow:dd-MM-yyyy}.csv";
+                await File.WriteAllLinesAsync(filePath, new[] { "Título;Descrição;Link(URL);Imagem;Portal" });
+                await File.AppendAllLinesAsync(filePath, linhas);
+
+                Console.WriteLine("Arquivo .CSV Salvo");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ErrorMessage}");
+            }
+        }
+    }
+}
