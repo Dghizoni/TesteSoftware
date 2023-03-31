@@ -22,7 +22,7 @@ namespace MyApp
             request.AddParameter("limit", limit);
 
             RestClient client = new RestClient(baseUrl);
-            IRestResponse response = await client.ExecuteAsync(request);
+            RestResponse response = await client.ExecuteAsync(request);
 
             if (response.IsSuccessful)
             {
