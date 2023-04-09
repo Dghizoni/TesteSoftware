@@ -19,7 +19,6 @@ namespace MyApp
             string apiToken = "rcFgbY64i2j6EIrvei2wYoQbVQIzcWmEGJkH2mo6";
             //string endpoint = "";
 
-            List<string> linhas = new();
 
             Console.ForegroundColor = ConsoleColor.Blue;
 
@@ -53,36 +52,24 @@ namespace MyApp
                 }
 
                 Console.WriteLine("Finalizado Transformação Json no Objeto News");
-                
+
                 string linha = "";
+                List<string> linhas = new();
+
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("Criando Arquivo .CSV");
-                foreach (News noticia in news){
+
+                foreach (News noticia in news)
+                {
                     linha = $"{noticia.title};{noticia.description};{noticia.url};{noticia.image_url};{noticia.source}";
-                    
                     linhas.Add(linha);
                 }
 
-                byte[] bytesArquivo = null;
+                string filePath = $@"C:\Downloads\NoticiasTOP3-{DateTime.UtcNow:dd-MM-yyyy}.csv";
+                await File.WriteAllLinesAsync(filePath, new[] { "Título;Descrição;Link(URL);Imagem;Portal" });
+                await File.AppendAllLinesAsync(filePath, linhas);
 
-                using (MemoryStream arquivo = new MemoryStream())
-                {
-                    using (StreamWriter sw = new StreamWriter(arquivo))
-                    {
-                        sw.WriteLine("Título;Descrição;Link(URL);Imagem;Portal");
-                        foreach (string linha1 in linhas)
-                            sw.WriteLine(linha1);
-                    }
-                    bytesArquivo = arquivo.ToArray();
-                }
-
-                string hoje = DateTime.UtcNow.ToString("-dd-MM-yyyy");
-
-                string diretorio = $@"C:\Downloads\NoticiasTOP3{hoje}.csv";
-                File.WriteAllBytes(diretorio, bytesArquivo);
-
-                
-                Console.WriteLine("Arquivo .CSV  Salvo");
+                Console.WriteLine("Arquivo .CSV Salvo");
 
             }
             else
