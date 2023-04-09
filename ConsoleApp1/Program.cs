@@ -1,4 +1,5 @@
 ﻿using ConsoleApp1.Models;
+using ConsoleApp1.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -9,9 +10,10 @@ namespace MyApp
 
     class Program
     {
-
         static async Task Main(string[] args)
         {
+
+            //var teste = ConsoleApp1.Services.RequestServiceTests();
 
             string baseUrl = "https://api.thenewsapi.com/v1/news/top";
             string locale = "us";
