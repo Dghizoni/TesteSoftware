@@ -67,8 +67,14 @@ namespace MyApp
                     linhas.Add(linha);
                 }
 
+
                 string filePath = $@"C:\Downloads\NoticiasTOP3-{DateTime.UtcNow:dd-MM-yyyy}.csv";
-                await File.WriteAllLinesAsync(filePath, new[] { "Título;Descrição;Link(URL);Imagem;Portal" });
+                string diretorio = Path.GetDirectoryName(filePath);
+
+                if (!Directory.Exists(diretorio))
+                    Directory.CreateDirectory(diretorio);
+
+                await File.WriteAllLinesAsync(filePath, new[] { "Titulo;Descricao;Link(URL);Imagem;Portal" });
                 await File.AppendAllLinesAsync(filePath, linhas);
 
                 Console.WriteLine("Arquivo .CSV Salvo");
